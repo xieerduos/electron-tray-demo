@@ -4,14 +4,14 @@
 
 ```bash
 # 安装模块依赖
-npm install
+yarn install
 
 # 启动项目
-npm start
+yarn start
 
 
 # 打包项目
-npm run electron:build
+yarn run electron:build
 ```
 
 最终效果图，看右下角

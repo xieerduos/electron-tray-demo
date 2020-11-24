@@ -4,7 +4,8 @@ module.exports = {
         // 以下数组内文件夹内文件发生改变重新编译electron应用
         mainProcessWatch: ['src/service'],
         electronBuilder: {
-            nodeIntegration: true
+            preload: 'src/preload.js',
+            nodeIntegration: false
         }
     }
 };

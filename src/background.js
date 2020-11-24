@@ -4,6 +4,16 @@ import {app, protocol, BrowserWindow, ipcMain} from 'electron';
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import setTray from './service/setTray';
+import path from 'path';
+process.on('unhandledRejection', error => {
+    console.error(error);
+});
+
+const getVersion = require('./getVersion');
+
+global.shareObj = {
+    getVersion: getVersion
+};
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -15,6 +25,7 @@ let appTray;
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: {secure: true, standard: true}}]);
 
 function createWindow() {
+    console.log('process.env.ELECTRON_NODE_INTEGRATION', process.env.ELECTRON_NODE_INTEGRATION);
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 800,
@@ -22,7 +33,10 @@ function createWindow() {
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+            contextIsolation: true,
+            enableRemoteModule: true,
+            preload: path.join(__dirname, 'preload.js')
         }
     });
 
@@ -83,6 +97,10 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString());
         }
     }
+
+    const version = getVersion();
+    console.log('version', version);
+
     createWindow();
 });
 

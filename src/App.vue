@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        {{ version }}
         <div id="nav">
             <router-link to="/">Home</router-link> |
             <router-link to="/about">About</router-link>
@@ -10,13 +11,15 @@
     </div>
 </template>
 <script>
-import {ipcRenderer} from 'electron';
 export default {
     name: 'app',
+    data() {
+        return {
+            version: window.myAPI.getVersion()
+        };
+    },
     methods: {
-        handleDisplayWindow(data) {
-            ipcRenderer.send('hidden-window', data);
-        }
+        handleDisplayWindow(data) {}
     }
 };
 </script>

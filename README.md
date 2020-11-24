@@ -84,3 +84,12 @@ error Command failed with exit code 1.
 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.
 PS D:\dev\electron-tray>
 ```
+
+The following steps can be executed to run
+
+```
+npm install -g node-gyp
+npm install --global --production windows-build-tools
+
+npm start
+```

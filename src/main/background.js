@@ -1,6 +1,6 @@
 'use strict';
 
-import {app, protocol, BrowserWindow, ipcMain} from 'electron';
+import {app, protocol, Menu, BrowserWindow, ipcMain} from 'electron';
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import setTray from './service/setTray';
@@ -9,10 +9,10 @@ process.on('unhandledRejection', error => {
     console.error(error);
 });
 
-const getVersion = require('./getVersion');
+const getVersion = require('../common/getVersion');
 
 global.shareObj = {
-    getVersion: getVersion
+    getVersion
 };
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -30,6 +30,10 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        show: false,
+        thickFrame: true,
+        frame: true, // 无边框
+        backgroundColor: '#fff',
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -40,10 +44,18 @@ function createWindow() {
         }
     });
 
+    mainWindow.removeMenu();
+    // window生效
+    Menu.setApplicationMenu(Menu.buildFromTemplate([]));
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+    });
+
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
         mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-        if (!process.env.IS_TEST) mainWindow.webContents.openDevTools();
+        // if (!process.env.IS_TEST) mainWindow.webContents.openDevTools();
     } else {
         createProtocol('app');
         // Load the index.html when not in development
@@ -97,9 +109,6 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString());
         }
     }
-
-    const version = getVersion();
-    console.log('version', version);
 
     createWindow();
 });

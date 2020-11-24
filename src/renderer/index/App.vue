@@ -1,6 +1,9 @@
 <template>
     <div id="app">
-        {{ version }}
+        <div>
+            D:\\tools\\DuGuanjia File\\DuGuanjia/DuGuanjiaSvc.exe
+        </div>
+        <p>Version:{{ version }}</p>
         <div id="nav">
             <router-link to="/">Home</router-link> |
             <router-link to="/about">About</router-link>
